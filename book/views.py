@@ -1,4 +1,5 @@
 # from django.shortcuts import render
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets
 
 from book.models import Book
@@ -33,4 +34,20 @@ class BookViewSet(viewsets.ModelViewSet):
             return BookCreateSerializer
         return BookSerializer
 
-
+    # For documentation purposes
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "title",
+                type=str,
+                description="Filter by book title ex.(?title='Harry Potter')"
+            ),
+            OpenApiParameter(
+                "author",
+                type=str,
+                description="Filter by book author ex.(?title='J. K. Rowling')"
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        super(BookViewSet, self).list(request, *args, **kwargs)
