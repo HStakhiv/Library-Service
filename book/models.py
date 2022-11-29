@@ -16,10 +16,12 @@ class Book(models.Model):
         choices=COVER_CHOICES,
         default=HARD,
     )
-    inventory = models.IntegerField(unique=True, validators=[
-        MinValueValidator(0),
-        MaxValueValidator(5000),
-    ])
+    inventory = models.IntegerField(
+        default=0,
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(100),
+        ])
     daily_fee = models.DecimalField(
         max_digits=5,
         decimal_places=2,

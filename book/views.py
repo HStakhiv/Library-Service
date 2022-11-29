@@ -2,7 +2,7 @@
 from rest_framework import viewsets
 
 from book.models import Book
-from book.serializers import BookSerializer
+from book.serializers import BookSerializer, BookCreateSerializer
 
 
 class BookViewSet(viewsets.ModelViewSet):
@@ -27,3 +27,8 @@ class BookViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(inventory=inventory)
 
         return queryset.distinct()
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return BookCreateSerializer
+        return BookSerializer
