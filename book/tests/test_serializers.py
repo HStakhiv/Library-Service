@@ -26,6 +26,7 @@ class TestSerializers(TestCase):
     def test_contains_expected_fields(self):
         data = self.serializer.data
 
-        self.assertEqual(data.keys(), set(
-            ["id", "title", "author", "cover", "inventory", "daily_fee"]
-        ))
+        self.assertEqual(
+            data.keys(),
+            set(["id", "title", "author", "cover", "inventory", "daily_fee"]),
+        )

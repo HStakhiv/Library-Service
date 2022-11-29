@@ -28,5 +28,3 @@ class BookCreateSerializer(BookSerializer):
             "daily_fee",
         )
         read_only_fields = ["inventory"]
-
-
