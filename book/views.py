@@ -14,7 +14,6 @@ class BookViewSet(viewsets.ModelViewSet):
         """Retrieve the movies with filters"""
         title = self.request.query_params.get("title")
         author = self.request.query_params.get("author")
-        inventory = self.request.query_params.get("inventory")
 
         queryset = self.queryset
 
@@ -23,9 +22,6 @@ class BookViewSet(viewsets.ModelViewSet):
 
         if author:
             queryset = queryset.filter(author__icontains=author)
-
-        if inventory:
-            queryset = queryset.filter(inventory=inventory)
 
         return queryset.distinct()
 
