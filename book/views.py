@@ -40,14 +40,14 @@ class BookViewSet(viewsets.ModelViewSet):
             OpenApiParameter(
                 "title",
                 type=str,
-                description="Filter by book title ex.(?title='Harry Potter')"
+                description="Filter by book title ex.(?title='Harry Potter')",
             ),
             OpenApiParameter(
                 "author",
                 type=str,
-                description="Filter by book author ex.(?title='J. K. Rowling')"
+                description="Filter by book author ex.(?title='J. K. Rowling')",
             ),
         ]
     )
     def list(self, request, *args, **kwargs):
-        super(BookViewSet, self).list(request, *args, **kwargs)
+        return super(BookViewSet, self).list(request, *args, **kwargs)
