@@ -45,7 +45,7 @@ class BorrowingCreateSerializer(BorrowingSerializer):
             "actual_return_date",
             "book",
         )
-        read_only_fields = ["user", "actual_return_date"]
+        read_only_fields = ["actual_return_date"]
 
     def validate(self, attrs):
         data = super(BorrowingSerializer, self).validate(attrs=attrs)
@@ -77,4 +77,4 @@ class BorrowingAdminSerializer(serializers.ModelSerializer):
 
 
 class BorrowingAdminDetailSerializer(BorrowingAdminSerializer):
-    book = BookSerializer(many=True, read_only=True)
+    book = BookSerializer(many=False, read_only=True)
