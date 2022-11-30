@@ -5,7 +5,6 @@ from borrowing.models import Borrowing
 
 
 class BorrowingSerializer(serializers.ModelSerializer):
-    # is_active = serializers.BooleanField(source="borrowing.is_active", read_only=True)
     class Meta:
         model = Borrowing
         fields = (
@@ -14,10 +13,7 @@ class BorrowingSerializer(serializers.ModelSerializer):
             "expected_return_date",
             "actual_return_date",
             "book",
-            # "is_active",
-            # "user",
         )
-        # write_only_fields = ["is_active", ]
 
 
 class BorrowingDetailSerializer(BorrowingSerializer):
@@ -33,7 +29,6 @@ class BorrowingAdminSerializer(serializers.ModelSerializer):
             "expected_return_date",
             "actual_return_date",
             "book",
-            # "is_active",
             "user",
         )
 
