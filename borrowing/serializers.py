@@ -2,20 +2,20 @@ from django.db import transaction
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from book.models import Book
+# from book.models import Book
 from book.serializers import BookSerializer
 from borrowing.models import Borrowing
 
 
-class BookBorrowingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Book
-        fields = "__all__"
-
-    def validate(self, attrs):
-        data = super(BookBorrowingSerializer, self).validate(attrs)
-        Book.validate_inventory(attrs["inventory"], ValueError)
-        return data
+# class BookBorrowingSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Book
+#         fields = "__all__"
+#
+#     def validate(self, attrs):
+#         data = super(BookBorrowingSerializer, self).validate(attrs)
+#         Book.validate_inventory(attrs["inventory"], ValueError)
+#         return data
 
 
 class BorrowingSerializer(serializers.ModelSerializer):
@@ -25,10 +25,9 @@ class BorrowingSerializer(serializers.ModelSerializer):
             "id",
             "borrow_date",
             "expected_return_date",
-            "actual_return_date",
             "book",
-            "user",
         )
+        read_only_fields = ["actual_return_date", ]
 
 
 class BorrowingDetailSerializer(BorrowingSerializer):
@@ -62,3 +61,20 @@ class BorrowingCreateSerializer(BorrowingSerializer):
             Borrowing.decrease_book_inventory(pk=books_data.book.id)
             books_data.save()
             return books_data
+
+
+class BorrowingAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Borrowing
+        fields = (
+            "id",
+            "borrow_date",
+            "expected_return_date",
+            "actual_return_date",
+            "book",
+            "user",
+        )
+
+
+class BorrowingAdminDetailSerializer(BorrowingAdminSerializer):
+    book = BookSerializer(many=True, read_only=True)
