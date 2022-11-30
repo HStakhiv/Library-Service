@@ -54,3 +54,9 @@ class AuthenticatedBookApiViewTests(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, serializer.data)
+
+    def test_book_filter(self):
+        book = sample_book(title="test")
+        res = self.client.get(BOOK_URL, {"title": "test"})
+        serializer = BookSerializer(book)
+        self.assertIn(serializer.data, res.data)
