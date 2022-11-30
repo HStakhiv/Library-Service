@@ -4,19 +4,19 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from book.models import Book
+from book.permissions import IsAdminOrIfNotReadOnly
 from book.serializers import BookSerializer, BookCreateSerializer
 
 
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAdminOrIfNotReadOnly, )
 
     def get_queryset(self):
         """Retrieve the movies with filters"""
         title = self.request.query_params.get("title")
         author = self.request.query_params.get("author")
-        inventory = self.request.query_params.get("inventory")
 
         queryset = self.queryset
 
@@ -25,9 +25,6 @@ class BookViewSet(viewsets.ModelViewSet):
 
         if author:
             queryset = queryset.filter(author__icontains=author)
-
-        if inventory:
-            queryset = queryset.filter(inventory=inventory)
 
         return queryset.distinct()
 
