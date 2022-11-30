@@ -1,14 +1,14 @@
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.db import models
 
 from book.models import Book
+from user.models import User
 
 
 class Borrowing(models.Model):
     borrow_date = models.DateField(auto_now_add=True)
     expected_return_date = models.DateField()
-    actual_return_date = models.DateField(null=True)
+    actual_return_date = models.DateField(blank=True, null=True)
     book = models.ForeignKey(
         Book,
         related_name="borrowing_books",
@@ -22,3 +22,9 @@ class Borrowing(models.Model):
 
     class Meta:
         ordering = ["borrow_date"]
+
+    @staticmethod
+    def decrease_book_inventory(pk):
+        book = Book.objects.get(pk=pk)
+        book.inventory -= 1
+        book.save()

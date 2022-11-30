@@ -4,7 +4,10 @@ from rest_framework.permissions import IsAuthenticated
 from borrowing.models import Borrowing
 from borrowing.serializers import (
     BorrowingSerializer,
-    BorrowingDetailSerializer, BorrowingAdminSerializer, BorrowingAdminDetailSerializer,
+    BorrowingDetailSerializer,
+    BorrowingAdminSerializer,
+    BorrowingAdminDetailSerializer,
+    BorrowingCreateSerializer,
 )
 
 
@@ -24,24 +27,21 @@ class BorrowingViewSet(viewsets.ModelViewSet):
                 return BorrowingAdminDetailSerializer
             return BorrowingDetailSerializer
 
-
+        if self.action == "create":
+            return BorrowingCreateSerializer
 
         return BorrowingSerializer
 
     def get_queryset(self):
         is_active = self.request.query_params.get("is_active")
 
-        queryset = self.queryset
-
         if is_active:
-            queryset = self.queryset.filter(actual_return_date__isnull=eval(is_active))
-            # x = [obj.id for obj in queryset if obj.is_active is eval(is_active)]
-            # queryset = self.queryset.filter(id__in=x)
+            return self.queryset.filter(actual_return_date__isnull=eval(is_active))
 
         if not self.request.user.is_staff:
-            return queryset.filter(user=self.request.user)
+            return self.queryset.filter(user=self.request.user)
 
-        return queryset
+        return self.queryset
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
