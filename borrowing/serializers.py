@@ -2,20 +2,8 @@ from django.db import transaction
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-# from book.models import Book
 from book.serializers import BookSerializer
 from borrowing.models import Borrowing
-
-
-# class BookBorrowingSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Book
-#         fields = "__all__"
-#
-#     def validate(self, attrs):
-#         data = super(BookBorrowingSerializer, self).validate(attrs)
-#         Book.validate_inventory(attrs["inventory"], ValueError)
-#         return data
 
 
 class BorrowingSerializer(serializers.ModelSerializer):
