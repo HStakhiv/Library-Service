@@ -36,7 +36,6 @@ class BorrowingDetailSerializer(BorrowingSerializer):
 
 
 class BorrowingCreateSerializer(BorrowingSerializer):
-
     class Meta:
         model = Borrowing
         fields = (
@@ -62,6 +61,4 @@ class BorrowingCreateSerializer(BorrowingSerializer):
             books_data = Borrowing.objects.create(**validated_data)
             Borrowing.decrease_book_inventory(pk=books_data.book.id)
             books_data.save()
-            # validated_data["books_data"] = books_data
             return books_data
-
