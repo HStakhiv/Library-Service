@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.conf import settings
 from django.db import models
 
@@ -26,3 +28,13 @@ class Borrowing(models.Model):
         book = Book.objects.get(pk=pk)
         book.inventory -= 1
         book.save()
+
+    @staticmethod
+    def increase_book_inventory(pk):
+        book = Book.objects.get(pk=pk)
+        book.inventory += 1
+        book.save()
+
+    @staticmethod
+    def set_actual_data():
+        return str(datetime.now()).split()[0]
