@@ -66,3 +66,33 @@ class BorrowingAdminSerializer(serializers.ModelSerializer):
 
 class BorrowingAdminDetailSerializer(BorrowingAdminSerializer):
     book = BookSerializer(many=False, read_only=True)
+
+
+class BookReturnBorrowingSerializer(BorrowingSerializer):
+    class Meta:
+        model = Borrowing
+        fields = (
+            "id",
+            "user",
+            "borrow_date",
+            "expected_return_date",
+            "actual_return_date",
+            "book",
+        )
+        read_only_fields = ("user", "borrow_date", "expected_return_date", "book", )
+
+    def validate(self, attrs):
+        data = super(BorrowingSerializer, self).validate(attrs=attrs)
+        if self.instance.actual_return_date:
+            raise ValidationError("You already borrow this book")
+        return data
+
+    def create(self, validated_data):
+        return Borrowing.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        with transaction.atomic():
+            instance.actual_return_date = instance.set_actual_data()
+            Borrowing.increase_book_inventory(pk=instance.book.id)
+            instance.save()
+            return instance
