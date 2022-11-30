@@ -1,11 +1,10 @@
-# from django.shortcuts import render
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from book.models import Book
 from book.permissions import IsAdminOrIfNotReadOnly
-from book.serializers import BookSerializer, BookCreateSerializer
+from book.serializers import BookSerializer
 
 
 class BookViewSet(viewsets.ModelViewSet):
@@ -27,11 +26,6 @@ class BookViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(author__icontains=author)
 
         return queryset.distinct()
-
-    def get_serializer_class(self):
-        if self.action == "create":
-            return BookCreateSerializer
-        return BookSerializer
 
     # For documentation purposes
     @extend_schema(
