@@ -38,6 +38,6 @@ class BorrowingViewSet(viewsets.ModelViewSet):
 class DailyViewSet(viewsets.ModelViewSet):
     today = datetime.now()
     tomorrow = today + timedelta(1)
-    queryset = Borrowing.objects.filter(expected_return_date=tomorrow)
+    queryset = Borrowing.objects.filter(expected_return_date__gte=tomorrow)
     serializer_class = BorrowingSerializer
     # permission_classes = (IsAdminUser,)
