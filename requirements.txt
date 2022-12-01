@@ -10,3 +10,4 @@ flake8-variables-names==0.0.5
 pep8-naming==0.13.2
 psycopg2-binary==2.9.5
 coverage==6.5.0
+APScheduler==3.9.1.post1
