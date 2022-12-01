@@ -4,10 +4,12 @@ from rest_framework.exceptions import ValidationError
 
 from book.serializers import BookSerializer
 from borrowing.models import Borrowing
-from payment.models import Payment
+from payment.serializers import PaymentSerializer
 
 
 class BorrowingSerializer(serializers.ModelSerializer):
+    payment = PaymentSerializer()
+
     class Meta:
         model = Borrowing
         fields = (
@@ -16,6 +18,7 @@ class BorrowingSerializer(serializers.ModelSerializer):
             "expected_return_date",
             "actual_return_date",
             "book",
+            "payment",
         )
         read_only_fields = ["actual_return_date", ]
 
@@ -49,13 +52,14 @@ class BorrowingCreateSerializer(BorrowingSerializer):
         with transaction.atomic():
             borrowing_data = Borrowing.objects.create(**validated_data)
             payment_date = borrowing_data.expected_return_date - borrowing_data.borrow_date
+            book = borrowing_data.book
             Borrowing.decrease_book_inventory(pk=borrowing_data.book.id)
             borrowing_data.save()
-            Payment.create_product(status="PENDING",
+            Payment.create_session(book=book,
                                    money_to_pay=borrowing_data.book.daily_fee,
                                    days=payment_date.days,
                                    borrowing=borrowing_data,
-                                   user_id=borrowing_data.user_id, )
+                                   user_id=borrowing_data.user_id,)
             return borrowing_data
 
 

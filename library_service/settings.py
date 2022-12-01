@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import os
 from datetime import timedelta
 from pathlib import Path
 
@@ -163,5 +164,5 @@ SPECTACULAR_SETTINGS = {
     },
 }
 
-STRIPE_PUBLIC_KEY = "pk_test_51M9vwhHIEaFPUihAbo7klszEeX12CctWYV1pLMInctbZRKvZFsCPdlVnUVhgEX37pbyPBsY59cx1k17Kn8GR6NMy00YMhwF8gR"
-STRIPE_SECRET_KEY = "sk_test_51M9vwhHIEaFPUihAYCLE8eeJuMVmTtvnI9UjYuX5nQhdQQsSZiCXYtGSLEvbJEfTnXhpiYiOIZvYYSYohP1zmf5U00BkREbBOx"
+STRIPE_PUBLIC_KEY = os.environ["STRIPE_PUBLIC_KEY"]
+STRIPE_SECRET_KEY = os.environ["STRIPE_SECRET_KEY"]

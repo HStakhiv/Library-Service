@@ -53,14 +53,23 @@ class Payment(models.Model):
     )
 
     @staticmethod
-    def create_product(status, money_to_pay, days, borrowing, user_id):
+    def create_session(book, money_to_pay, days, borrowing, user_id):
         unit_amount = money_to_pay * days * 100
 
-        product = stripe.Product.create(name=f"{borrowing}")
-        stripe.Price.create(
-            unit_amount=int(decimal.Decimal(unit_amount)),
-            currency="usd",
-            product=product["id"],
+        return stripe.checkout.Session.create(
+            line_items=[{
+                'price_data': {
+                    'currency': 'usd',
+                    'product_data': {
+                        'name': book.title,
+                    },
+                    'unit_amount': unit_amount,
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url='http://localhost:4242/success',
+            cancel_url='http://localhost:4242/cancel',
         )
 
     # next fields will be added when session is implemented

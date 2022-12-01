@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 
 from payment.models import Payment
 from payment.serializers import (
@@ -10,6 +11,7 @@ from payment.serializers import (
 class PaymentViewSet(viewsets.ModelViewSet):
     queryset = Payment.objects.prefetch_related("borrowing_id")
     serializer_class = PaymentSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         queryset = self.queryset
