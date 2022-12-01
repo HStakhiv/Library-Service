@@ -15,23 +15,13 @@ class Payment(models.Model):
     ]
     PAYMENT = "PAYMENT"
     FINE = "FINE"
-    TYPE_CHOICES = [
-        (PAYMENT, "Payment"),
-        (FINE, "Fine")
-    ]
-    status = models.CharField(
-        max_length=7,
-        choices=STATUS_CHOICES
-    )
+    TYPE_CHOICES = [(PAYMENT, "Payment"), (FINE, "Fine")]
+    status = models.CharField(max_length=7, choices=STATUS_CHOICES)
     type = models.CharField(
-        max_length=7,
-        choices=TYPE_CHOICES,
-        default=PAYMENT
+        max_length=7, choices=TYPE_CHOICES, default=PAYMENT
     )
     borrowing_id = models.ForeignKey(
-        to=Borrowing,
-        on_delete=models.CASCADE,
-        related_name="payments"
+        to=Borrowing, on_delete=models.CASCADE, related_name="payments"
     )
     money_to_pay = models.DecimalField(
         max_digits=5,
@@ -44,7 +34,7 @@ class Payment(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="payments"
+        related_name="payments",
     )
 
     # next fields will be added when session is implemented

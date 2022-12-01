@@ -24,7 +24,9 @@ class BorrowingViewSet(viewsets.ModelViewSet):
         is_active = self.request.query_params.get("is_active")
 
         if is_active:
-            return self.queryset.filter(actual_return_date__isnull=eval(is_active))
+            return self.queryset.filter(
+                actual_return_date__isnull=eval(is_active)
+            )
 
         if not self.request.user.is_staff:
             return self.queryset.filter(user=self.request.user)
@@ -53,9 +55,7 @@ class BorrowingViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    @action(url_path="return",
-            detail=True,
-            methods=["post"])
+    @action(url_path="return", detail=True, methods=["post"])
     def return_book(self, request, pk):
 
         borrowing = Borrowing.objects.get(id=pk)

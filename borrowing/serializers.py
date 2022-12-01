@@ -18,7 +18,9 @@ class BorrowingSerializer(serializers.ModelSerializer):
             "actual_return_date",
             "book",
         )
-        read_only_fields = ["actual_return_date", ]
+        read_only_fields = [
+            "actual_return_date",
+        ]
 
 
 class BorrowingDetailSerializer(BorrowingSerializer):
@@ -49,11 +51,12 @@ class BorrowingCreateSerializer(BorrowingSerializer):
     def create(self, validated_data):
         with transaction.atomic():
             borrowing_data = Borrowing.objects.create(**validated_data)
-            Payment.objects.create(status="PENDING",
-                                   money_to_pay=borrowing_data.book.daily_fee,
-                                   borrowing_id=borrowing_data,
-                                   user_id=borrowing_data.user_id,
-                                   )
+            Payment.objects.create(
+                status="PENDING",
+                money_to_pay=borrowing_data.book.daily_fee,
+                borrowing_id=borrowing_data,
+                user_id=borrowing_data.user_id,
+            )
             Borrowing.decrease_book_inventory(pk=borrowing_data.book.id)
             borrowing_data.save()
             return borrowing_data
@@ -87,7 +90,12 @@ class BookReturnBorrowingSerializer(BorrowingSerializer):
             "actual_return_date",
             "book",
         )
-        read_only_fields = ("user", "borrow_date", "expected_return_date", "book", )
+        read_only_fields = (
+            "user",
+            "borrow_date",
+            "expected_return_date",
+            "book",
+        )
 
     def validate(self, attrs):
         data = super(BorrowingSerializer, self).validate(attrs=attrs)

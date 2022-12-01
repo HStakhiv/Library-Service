@@ -46,7 +46,7 @@ class AuthenticatedBorrowingApiViewTests(TestCase):
         defaults = {
             "expected_return_date": "2020-08-08",
             "book": self.sample_book(),
-            "user": self.user
+            "user": self.user,
         }
         defaults.update(params)
 
