@@ -49,8 +49,8 @@ class AuthenticatedBookApiViewTests(TestCase):
 
         response = self.client.get(BOOK_URL)
 
-        movies = Book.objects.all()
-        serializer = BookSerializer(movies, many=True)
+        books = Book.objects.all()
+        serializer = BookSerializer(books, many=True)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, serializer.data)
