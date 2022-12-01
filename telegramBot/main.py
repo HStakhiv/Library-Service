@@ -6,7 +6,7 @@ import os
 
 
 # env
-BOT_TOKEN = "5889653549:AAEihjuRUOSipiegopGSQ0A0icP6IUbawH4"
+BOT_TOKEN = "" #input bot token
 USER_ID = ""
 URL = "http://127.0.0.1:8000"
 
@@ -17,8 +17,8 @@ def login():
     "Content-type": "text/javascript"
     }
     data = {
-        "email": "test@test.test",
-        "password": "test1234"
+        "email": "",  # input login credentials
+        "password": ""
 }
     response = requests.post(url=url, json=json1, data=data)
     soup = BeautifulSoup(response.text, "lxml")
@@ -33,9 +33,9 @@ def check_all_borrowing():
         session = requests.Session()
         url = f"{URL}/api/borrowings/"
         response = session.get(url=url, headers=headers).json()
-        borrwings = []
+        borrwings = {}
         for borrowing in response:
-            borrwings[borrowing.id] = borrowing
+            borrwings[borrowing["id"]] = borrowing
 
         with open(f"all_borrowings.json", "w") as file:
             json.dump(borrwings, file, indent=4, ensure_ascii=False)
