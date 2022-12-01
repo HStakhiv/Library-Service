@@ -1,91 +1,71 @@
 import requests
 from bs4 import BeautifulSoup
 import json
-import lxml
-import os
 
-
-# env
-BOT_TOKEN = "" #input bot token
-USER_ID = ""
-URL = "http://127.0.0.1:8000"
+#####TODO .env
 
 
 def login():
     url = f"{URL}/api/user/token/"
-    json1 = {
-    "Content-type": "text/javascript"
-    }
-    data = {
-        "email": "",  # input login credentials
-        "password": ""
-}
+    json1 = {"Content-type": "text/javascript"}
+    data = {"email": EMAIL, "password": PASSWORD}
     response = requests.post(url=url, json=json1, data=data)
     soup = BeautifulSoup(response.text, "lxml")
     token = json.loads(soup.text)["access"]
     return token
 
 
+HEADERS = {
+    "Authorize": f"Bearer {login()}",
+}
+
+
 def check_all_borrowing():
-        headers = {
-            "Authorize": f"Bearer {login()}",
-        }
-        session = requests.Session()
-        url = f"{URL}/api/borrowings/"
-        response = session.get(url=url, headers=headers).json()
-        borrwings = {}
-        for borrowing in response:
-            borrwings[borrowing["id"]] = borrowing
+    session = requests.Session()
+    url = f"{URL}/api/borrowings/"
+    response = session.get(url=url, headers=HEADERS).json()
+    borrowings = {}
+    for borrowing in response:
+        borrowings[borrowing["id"]] = borrowing
 
-        with open(f"all_borrowings.json", "w") as file:
-            json.dump(borrwings, file, indent=4, ensure_ascii=False)
-
-check_all_borrowing()
+    with open(f"all_borrowings.json", "w") as file:
+        json.dump(borrowings, file, indent=4, ensure_ascii=False)
+    return borrowings
 
 
 def check_new_update():
     with open(f"all_borrowings.json") as file:
-        old_borrwings = json.load(file)
+        old_borrowings = json.load(file)
 
-    headers = {
-        "Authorize": f"Bearer {login()}",
-    }
     session = requests.Session()
     url = f"{URL}/api/borrowings/"
-    response = session.get(url=url, headers=headers).json()
-    new_borrowins = []
+    response = session.get(url=url, headers=HEADERS).json()
+
+    new_borrowings = {}
+
     for borrowing in response:
-        borrowings_id = borrowing["id"]
-        if borrowings_id in old_borrwings:
+        borrowing_id = str(borrowing["id"])
+        if borrowing_id in old_borrowings:
             continue
         else:
-            print(borrowings_id)
+            new_borrowings[borrowing["id"]] = borrowing
+            old_borrowings[borrowing["id"]] = borrowing
 
-# check_new_update()
+            with open(f"updated_borrowings.json", "w") as file:
+                json.dump(new_borrowings, file, indent=4, ensure_ascii=False)
 
-    #         ad_link = item["share_url"]
-    #         ad_body = item["body"]
-    #         if "price" not in item:
-    #             ad_price = None
-    #         else:
-    #             ad_price = str(item["price"]["value"]) + " " + item["price"]["suffix"]
-    #         anno_dict[ad_id] = {
-    #             "link": ad_link,
-    #             "body": ad_body,
-    #             "price": ad_price
-    #         }
-    #
-    #         new_anno_dict[ad_id] = {
-    #             "link": ad_link,
-    #             "body": ad_body,
-    #             "price": ad_price
-    #         }
-    #         with open(f"last_ann_dict_{sub_word}.json", "w") as file:
-    #             json.dump(new_anno_dict, file, indent=4, ensure_ascii=False)
-    #
-    # with open(f"new_dict_{sub_word}.json", "w") as file:
-    #     json.dump(anno_dict, file, indent=4, ensure_ascii=False)
-    #
-    #
-    # return new_anno_dict
+        with open(f"all_borrowings.json", "w") as file:
+            json.dump(old_borrowings, file, indent=4, ensure_ascii=False)
 
+    return new_borrowings
+
+
+def check_unpaid_borrowing():
+    session = requests.Session()
+    url = f"{URL}/api/borrowings/?is_active=True"
+    response = session.get(url=url, headers=HEADERS).json()
+    unpaid_borrowings = {}
+    for borrowing in response:
+        unpaid_borrowings[borrowing["id"]] = borrowing
+
+    return unpaid_borrowings
