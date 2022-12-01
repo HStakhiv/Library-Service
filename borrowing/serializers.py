@@ -5,7 +5,6 @@ from rest_framework.exceptions import ValidationError
 from book.serializers import BookSerializer
 from borrowing.models import Borrowing
 from payment.models import Payment
-from payment.serializers import PaymentSerializer
 
 
 class BorrowingSerializer(serializers.ModelSerializer):
@@ -49,13 +48,14 @@ class BorrowingCreateSerializer(BorrowingSerializer):
     def create(self, validated_data):
         with transaction.atomic():
             borrowing_data = Borrowing.objects.create(**validated_data)
-            Payment.objects.create(status="PENDING",
-                                   money_to_pay=borrowing_data.book.daily_fee,
-                                   borrowing_id=borrowing_data,
-                                   user_id=borrowing_data.user_id,
-                                   )
+            payment_date = borrowing_data.expected_return_date - borrowing_data.borrow_date
             Borrowing.decrease_book_inventory(pk=borrowing_data.book.id)
             borrowing_data.save()
+            Payment.create_product(status="PENDING",
+                                   money_to_pay=borrowing_data.book.daily_fee,
+                                   days=payment_date.days,
+                                   borrowing=borrowing_data,
+                                   user_id=borrowing_data.user_id, )
             return borrowing_data
 
 

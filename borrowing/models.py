@@ -38,3 +38,6 @@ class Borrowing(models.Model):
     @staticmethod
     def set_actual_data():
         return str(datetime.now()).split()[0]
+
+    def __str__(self):
+        return f"{self.id}/{self.expected_return_date}/{self.book.id}"

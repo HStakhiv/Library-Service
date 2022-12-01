@@ -1,9 +1,14 @@
+import decimal
+
+import stripe
 from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 from borrowing.models import Borrowing
 from user.models import User
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 class Payment(models.Model):
@@ -46,6 +51,17 @@ class Payment(models.Model):
         on_delete=models.CASCADE,
         related_name="payments"
     )
+
+    @staticmethod
+    def create_product(status, money_to_pay, days, borrowing, user_id):
+        unit_amount = money_to_pay * days * 100
+
+        product = stripe.Product.create(name=f"{borrowing}")
+        stripe.Price.create(
+            unit_amount=int(decimal.Decimal(unit_amount)),
+            currency="usd",
+            product=product["id"],
+        )
 
     # next fields will be added when session is implemented
     # session_url = models.URLField()
