@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -65,3 +66,15 @@ class BorrowingViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "is_active",
+                type=bool,
+                description="Filter by borrowing is_active status ex.(?is_active='true')",
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super(BorrowingViewSet, self).list(request, *args, **kwargs)
