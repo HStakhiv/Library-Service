@@ -23,12 +23,13 @@ from drf_spectacular.views import (
 from rest_framework import routers
 
 from book.views import BookViewSet
-from borrowing.views import BorrowingViewSet
+from borrowing.views import BorrowingViewSet, DailyViewSet
 
 router = routers.DefaultRouter()
 
 router.register("borrowings", BorrowingViewSet)
 router.register("books", BookViewSet)
+router.register("daily", DailyViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),

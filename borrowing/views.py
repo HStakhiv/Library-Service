@@ -1,4 +1,7 @@
+from datetime import datetime, timedelta
+
 from rest_framework import viewsets
+# from rest_framework.permissions import IsAdminUser
 
 from borrowing.models import Borrowing
 from borrowing.serializers import (
@@ -10,6 +13,7 @@ from borrowing.serializers import (
 class BorrowingViewSet(viewsets.ModelViewSet):
     queryset = Borrowing.objects.all()
     serializer_class = BorrowingSerializer
+
     # permission_classes = (IsAuthenticated,)
     #
     # def get_queryset(self):
@@ -29,3 +33,11 @@ class BorrowingViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class DailyViewSet(viewsets.ModelViewSet):
+    today = datetime.now()
+    tomorrow = today + timedelta(1)
+    queryset = Borrowing.objects.filter(expected_return_date=tomorrow)
+    serializer_class = BorrowingSerializer
+    # permission_classes = (IsAdminUser,)
